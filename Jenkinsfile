@@ -23,7 +23,7 @@ pipeline {
             steps {
                 sh '''
                 . venv/bin/activate
-                PYTHONPATH=. pytest test_main.py
+                PYTHONPATH=. pytest tests.py
                 '''
             }
         }
