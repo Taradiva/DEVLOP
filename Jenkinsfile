@@ -18,23 +18,15 @@ pipeline {
                 '''
             }
         }
-
-        stage('Run Flask App in Background') {
-            steps {
-                sh '''
-                . venv/bin/activate
-                nohup python app/main.py &
-                '''
-            }
-        }
-
+        
         stage('Run Tests') {
             steps {
                 sh '''
                 . venv/bin/activate
-                PYTHONPATH=. pytest
+                PYTHONPATH=. pytest test_main.py
                 '''
             }
         }
     }
 }
+https://github.com/Taradiva/devlop.git
