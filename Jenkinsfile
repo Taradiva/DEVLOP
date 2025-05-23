@@ -29,4 +29,3 @@ pipeline {
         }
     }
 }
-https://github.com/Taradiva/devlop.git
