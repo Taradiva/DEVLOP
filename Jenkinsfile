@@ -1,30 +1,40 @@
-name: CI Flask App
+pipeline {
+    agent any
 
-on:
-  push:
-    branches:
-      - development
-  pull_request:
-    branches:
-      - development
+    stages {
+        stage('Clone') {
+            steps {
+                git branch: 'development', url: 'https://github.com/Stevendwt/UAS_DEVOPS.git'
+            }
+        }
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                python3 -m venv venv
+                . venv/bin/activate
+                pip install --upgrade pip
+                pip install -r requirements.txt
+                '''
+            }
+        }
 
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+        stage('Run Flask App in Background') {
+            steps {
+                sh '''
+                . venv/bin/activate
+                nohup python app/main.py &
+                '''
+            }
+        }
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-
-    - name: Run tests
-      run: pytest tests/
+        stage('Run Tests') {
+            steps {
+                sh '''
+                . venv/bin/activate
+                PYTHONPATH=. pytest
+                '''
+            }
+        }
+    }
+}
